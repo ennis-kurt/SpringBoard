@@ -14,22 +14,18 @@
 # ---
 
 # %%
-import os
 #import cdsapi
-
-import numpy as np
 import pandas as pd
-import pandas_profiling
-import geopandas
-# import netcdf4
+#import netcdf4
 import xarray as xarr # pandas based library for 
-            # labeled data with N-D tensors at each dimension
-import salem
+            # labeled data with N-D tensors at each dimensions
 
 import matplotlib.pyplot as plt
 # %matplotlib inline 
 import cartopy
 import cartopy.crs as ccrs
+
+import pandas_profiling
 import seaborn as sns
 
 
@@ -594,7 +590,7 @@ for state in list(df_crop.State.unique()): #['Wisconsin']:#
     # Detrending all the features so that we can study the interannual affect of 
     # weather to crop yields.
     plot_month_group('TNx',12,1,2,3,4,5,6,7,8,9,10,11)
-
+    
 
 # %% [markdown]
 # Let's write a function for plotting only a certain month in each year. We will use each month group as a single feature
