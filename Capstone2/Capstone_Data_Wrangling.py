@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 import pandas_profiling
 import geopandas
-# import netcdf4
+import netCDF4
 import xarray as xarr # pandas based library for 
             # labeled data with N-D tensors at each dimension
 import salem
