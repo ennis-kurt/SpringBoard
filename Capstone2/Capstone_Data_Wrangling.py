@@ -32,65 +32,8 @@ import cartopy
 import cartopy.crs as ccrs
 import seaborn as sns
 
-
-# %%
-def pull_data(_start, _end):
-    """ Downloads the data from CDS Servers in netcdf format 
-    in to the working directory
-    
-    _start: the starting year type: integer
-    _end: the end year type: integer
-    does not return anything.
-    """
-    year_range = pd.date_range(start=str(_start), end=str(_end), freq='YS').year
-
-    years = []
-    for item in year_range:
-        years.append(str(item))
-    c = cdsapi.Client()
-
-    c.retrieve(
-        'reanalysis-era5-single-levels',
-        {
-            'product_type': 'reanalysis',
-            'variable': '2m_temperature',
-            'year': years,
-            'month': [
-                '01', '02', '06',
-                '07', '08', '12',
-            ],
-            'day': [
-                '01', '02', '03',
-                '04', '05', '06',
-                '07', '08', '09',
-                '10', '11', '12',
-                '13', '14', '15',
-                '16', '17', '18',
-                '19', '20', '21',
-                '22', '23', '24',
-                '25', '26', '27',
-                '28', '29', '30',
-                '31',
-            ],
-            'time': [
-                '00:00', '01:00', '02:00',
-                '03:00', '04:00', '05:00',
-                '06:00', '07:00', '08:00',
-                '09:00', '10:00', '11:00',
-                '12:00', '13:00', '14:00',
-                '15:00', '16:00', '17:00',
-                '18:00', '19:00', '20:00',
-                '21:00', '22:00', '23:00',
-            ],
-            'area': [
-                49, -128, 23,
-                -66,
-            ],
-            'format': 'netcdf',
-        },
-        'download.nc')
-for _start, _end in [(1979, 1992), (1993,2019), (2020, 2020) ]:
-    pull_data(_start, _end )
+# %% [raw]
+#
 
 # %%
 # Read the data Path where it is stored on the Computer
@@ -99,8 +42,32 @@ data_dir = os.path.join('C:\\'
                         'Users',
                         'kurt_',
                         'Data',
-                        'crop_climotology','')
-data_dir
+                        'agroclimate','')
+os.chdir(data_dir)
+
+# %%
+import cdsapi
+
+c = cdsapi.Client()
+
+c.retrieve(
+    'sis-agroclimatic-indicators',
+    {
+        'origin': 'era_interim_reanalysis',
+        'variable': [
+            'biologically_effective_degree_days', 'frost_days', 'heavy_precipitation_days',
+            'ice_days', 'maximum_of_daily_maximum_temperature', 'maximum_of_daily_minimum_temperature',
+            'mean_of_daily_maximum_temperature', 'mean_of_daily_mean_temperature', 'mean_of_daily_minimum_temperature',
+            'mean_of_diurnal_temperature_range', 'minimum_of_daily_maximum_temperature', 'minimum_of_daily_minimum_temperature',
+            'precipitation_sum', 'simple_daily_intensity_index', 'summer_days',
+            'tropical_nights', 'very_heavy_precipitation_days', 'wet_days',
+        ],
+        'experiment': 'historical',
+        'temporal_aggregation': '10_day',
+        'period': '198101_201012',
+        'format': 'zip',
+    },
+    'download.zip')
 
 # %% tags=[]
 # Import data as xarray dataset from the directory
