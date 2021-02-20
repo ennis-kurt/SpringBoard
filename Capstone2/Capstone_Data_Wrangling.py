@@ -623,3 +623,12 @@ df = pd.DataFrame(scaler.fit_transform(df), columns=df.columns, index=df.index)
 
 mean = np.mean((df.values), axis=-1, keepdims=True)
 detrended = df - mean
+
+# %%
+
+# %% [markdown]
+# # Brainstorming
+# * Trytaking first difference using the pandas method .diff() to remove the drift instead of detrending by linear regression.
+#
+
+# %%
