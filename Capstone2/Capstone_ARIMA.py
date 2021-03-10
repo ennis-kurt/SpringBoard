@@ -91,9 +91,9 @@ else:
 # ### Exploring the indicators dataset
 
 # %%
-#print(clim.data_vars)
-#print(clim.coords)
-agroclim
+print(agroclim.data_vars)
+print(agroclim.coords)
+# agroclim
 
 # %% [markdown]
 # agroclim dataset have 2 spatial, one time coordinates and 15 variables. Now let's see what each of these variables are.
@@ -287,7 +287,7 @@ df_crop['Value'].isnull().sum()
 # %%
 # Missing Values
 nan=pd.DataFrame(df_crop.isnull().sum().sort_values(ascending=False), columns = ['NULL values'])
-nan
+nan.query('`NULL values` > 0').T
 
 # %% tags=[]
 #first get rid of the nan values in Value column only
@@ -297,7 +297,6 @@ df_crop.dropna(axis=1, inplace=True)
 # Fixing the index
 df_crop.reset_index(drop=True, inplace=True)
 print(df_crop.info())
-df_crop.head(3)
 
 
 # %% [markdown]
@@ -360,19 +359,17 @@ df_crop[mask_DomCat]['Domain Category'].value_counts()
 # %%
 # creating new dataframe for soybeans from CENSUS
 df_soybean_census = df_crop[mask_DomCat]
-df_soybean_census.head()
 
 # %%
 # Crerating a new dataframe for Survey only crops
 df_crop_srv = df_crop[~mask_DomCat]
-df_crop_srv.head()
 
 # %%
-# Let's what commodities left in the df_crop_srv
+# Let's see what commodities left in the df_crop_srv
 df_crop_srv.Commodity.value_counts()
 
 # %%
-df_crop_srv.head(3)
+df_crop_srv.info()
 
 # %% [markdown]
 # We are only interested some of these columns. Let's drop the ones we will not use.
@@ -393,7 +390,6 @@ print(f'dropped columns: {dropped}')
 # %%
 # Now fixing the index
 df_crop_srv = df_crop_srv.reset_index(drop=True)
-df_crop_srv.info()
 
 # %%
 df_crop_srv.sample(3)
@@ -496,14 +492,14 @@ a= "SOYBEANS, IRRIGATED - ACRES HARVESTED"
 ah = "ACRES HARVESTED"
 S = lambda s: ah in s
 test = df_crop['Data Item'].apply(S)
-df_crop[test]
+df_crop[test].head(3)
 
 # %% [markdown]
 # ## Getting Climate For Product Zone
 
 # %%
 month_length = agroclim.time.dt.days_in_month
-month_length
+month_length.head()
 
 # %% [markdown]
 # Some variables are aggregated as sum of all the occurence 
@@ -587,45 +583,35 @@ randm_day = state_clim['TG'].isel( time=np.random.randint(len(state_clim.time)))
 randm_day = randm_day.salem.roi(shape=state_coord)
 plt.pcolormesh(randm_day.lon, randm_day.lat, randm_day)
 cb = plt.colorbar(shrink=0.4) # use shrink to make colorbar smaller
-cb.set_label(f"{clim['TG'].long_name} in {clim['TG'].units}")
+cb.set_label(f"{agroclim['TG'].long_name} in {agroclim['TG'].units}")
 plt.title(randm_day.time.values)
 plt.show()
 plt.close()
 
 
 # %%
-for var in clim:
-    print(f'{var}: {clim[var].attrs}')
+for var in agroclim:
+    print(f'{var}: {agroclim[var].attrs}')
 # Let's select the first time step and plot the 2m-air temperature
 
 # Let's check the dimensions
-for dim in clim.dims:
-    dimsize = clim.dims[dim]
+for dim in agroclim.dims:
+    dimsize = agroclim.dims[dim]
     print(f'\nData has {dimsize} {dim} ')
     if dim == 'latitude':
-        print(f' latitudes: from {float(clim[dim].min())} degree South',
-     f'to {float(clim[dim].max())} degree North')
+        print(f' latitudes: from {float(agroclim[dim].min())} degree South',
+     f'to {float(agroclim[dim].max())} degree North')
     if dim == 'longitude':
-        print(f' Longitudes: from {float(clim[dim].max())} degree East',
-     f'to {float(clim[dim].min())} degree West')
+        print(f' Longitudes: from {float(agroclim[dim].max())} degree East',
+     f'to {float(agroclim[dim].min())} degree West')
     if dim == 'time':
-        print(f'time: from {pd.to_datetime(clim["time"].min().values)} to {pd.to_datetime(clim["time"].max().values)} ')
-
-# %%
-for state in list(df_crop.State.unique()): #['Wisconsin']:#
-    state_coord = us_states[(us_states.NAME == state.title())]
-    # Let's extract the state of interest and save as a separate dataset
-    state_clim = climate.salem.subset(shape=state_coord)
-    # Now let's take a spatial mean for entire state
-    state_clim = state_clim.salem.roi(shape=
-                state_coord).mean(dim=['lat','lon'])
-    # Detrending all the features so that we can study the interannual affect of 
-    # weather to crop yields.
-    plot_month_group('TNx',12,1,2,3,4,5,6,7,8,9,10,11)
-
+        print(f'time: from {pd.to_datetime(agroclim["time"].min().values)} to {pd.to_datetime(agroclim["time"].max().values)} ')
 
 # %% [markdown]
 # Let's write a function for plotting only a certain month in each year. We will use each month group as a single feature
+
+# %%
+state_clim.info()
 
 # %%
 plt.style.use('default')
@@ -650,22 +636,23 @@ def plot_month_group(var, *months_to_plot ):
 
 
 # %%
-plot_month_group('TNx',12,1,2,3,4,5,6,7,8,9,10,11)
+plot_month_group('TXn',12,1,2,3,4,5,6,7,8,9,10,11)
 
 # %%
-for state in list(df_crop.State.unique()): #['Wisconsin']:#
-    state_coord = us_states[(us_states.NAME == state.title())]
-    # Let's extract the state of interest and save as a separate dataset
-    state_clim = climate.salem.subset(shape=state_coord)
-    # Now let's take a spatial mean for entire state
-    state_clim = state_clim.salem.roi(shape=
-                state_coord).mean(dim=['lat','lon'])
-    # Detrending all the features so that we can study the interannual affect of 
-    # weather to crop yields.
-    plot_month_group('TNx',12,1,2,3,4,5,6,7,8,9,10,11)
+# for state in list(df_crop.State.unique()): #['Wisconsin']:#
+#     state_coord = us_states[(us_states.NAME == state.title())]
+#     # Let's extract the state of interest and save as a separate dataset
+#     state_clim = climate.salem.subset(shape=state_coord)
+#     # Now let's take a spatial mean for entire state
+#     state_clim = state_clim.salem.roi(shape=
+#                 state_coord).mean(dim=['lat','lon'])
+#     # Detrending all the features so that we can study the interannual affect of 
+#     # weather to crop yields.
+#     plot_month_group('TXn',12,1,2,3,4,5,6,7,8,9,10,11)
+
 
 # %% tags=[]
-df_crop_srv.profile_report(explorative=True, html={'style': {'full_width': True}})
+# df_crop_srv.profile_report(explorative=True, html={'style': {'full_width': True}})
 
 
 # %%
@@ -1184,19 +1171,6 @@ pred_uc = results.get_forecast(steps=50)
 pred_uc_ci = pred_uc.conf_int()
 
 # %%
-results.plot_diagnostics(figsize=(15, 12))
-plt.show()
-
-# %%
-from scipy.stats import shapiro
-stat, p = shapiro(residuals)
-print('stat=%.3f, p=%.5f' % (stat, p))
-if p > 0.05:
-    print("Data follows Normal Distribution")
-else:
-    print("Data does not follow Normal Distribution")
-
-# %%
 fig, ax = plt.subplots(figsize=(10,5))
 ax = corn_yield.plot(label='observed')
 pred.predicted_mean.plot(ax=ax, label='One-step ahead Forecast', alpha=.7)
@@ -1238,9 +1212,9 @@ plot_dynamic_pred(y,train, test, (0,2,2))
 #     </div>
 
 # %% [markdown]
-# # Regression Model For the Crop Yield vs. Agro-Climatic Indicators
-
-# %%
+# # Brainstorming
+# * Trytaking first difference using the pandas method .diff() to remove the drift instead of detrending by linear regression.
+#
 
 # %%
 
