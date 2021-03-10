@@ -1116,7 +1116,7 @@ plot_dynamic_pred(ylog,train, test, (0,1,1))
 
 # %% [markdown]
 # <div class="span5 alert alert-info">
-#     Finally let's try the original data without taking logarithm as we did before to fix the variance change in time. In the previous model, we had a trouble finding the best model order. We chose ARIMA(0,1,1), but the residuals were not normal. Whereas any more complicated models actually make worse of both the normallity of the residuals and other criteria like mse. 
+#     Finally let's try the original data without taking logarithm as we did before to fix the variance change in time. In the previous model, we had a trouble finding the best model order. We chose ARIMA(0,1,1), but the residuals were not normal. Whereas any more complicated models actually make worse of both the normallity of the residuals and other criteria like mse. </div>
 
 # %% [markdown]
 # This time let's use sklearns' SARIMAX method, which is equivalent its ARIMA model but have some more features.
