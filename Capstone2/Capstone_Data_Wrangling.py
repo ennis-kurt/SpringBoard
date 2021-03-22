@@ -7,7 +7,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.6.0
+#       jupytext_version: 1.10.3
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -34,28 +34,28 @@ import cartopy.crs as ccrs
 import seaborn as sns
 
 # %%
-# This cell needs to be run only once, when the agroclimatic indicators are downloaded from the source
+# # This cell needs to be run only once, when the agroclimatic indicators are downloaded from the source
 
-c = cdsapi.Client()
+# c = cdsapi.Client()
 
-c.retrieve(
-    'sis-agroclimatic-indicators',
-    {
-        'origin': 'era_interim_reanalysis',
-        'variable': [
-            'biologically_effective_degree_days', 'frost_days', 'heavy_precipitation_days',
-            'ice_days', 'maximum_of_daily_maximum_temperature', 'maximum_of_daily_minimum_temperature',
-            'mean_of_daily_maximum_temperature', 'mean_of_daily_mean_temperature', 'mean_of_daily_minimum_temperature',
-            'mean_of_diurnal_temperature_range', 'minimum_of_daily_maximum_temperature', 'minimum_of_daily_minimum_temperature',
-            'precipitation_sum', 'simple_daily_intensity_index', 'summer_days',
-            'tropical_nights', 'very_heavy_precipitation_days', 'wet_days',
-        ],
-        'experiment': 'historical',
-        'temporal_aggregation': '10_day',
-        'period': '198101_201012',
-        'format': 'zip',
-    },
-    'download.zip')
+# c.retrieve(
+#     'sis-agroclimatic-indicators',
+#     {
+#         'origin': 'era_interim_reanalysis',
+#         'variable': [
+#             'biologically_effective_degree_days', 'frost_days', 'heavy_precipitation_days',
+#             'ice_days', 'maximum_of_daily_maximum_temperature', 'maximum_of_daily_minimum_temperature',
+#             'mean_of_daily_maximum_temperature', 'mean_of_daily_mean_temperature', 'mean_of_daily_minimum_temperature',
+#             'mean_of_diurnal_temperature_range', 'minimum_of_daily_maximum_temperature', 'minimum_of_daily_minimum_temperature',
+#             'precipitation_sum', 'simple_daily_intensity_index', 'summer_days',
+#             'tropical_nights', 'very_heavy_precipitation_days', 'wet_days',
+#         ],
+#         'experiment': 'historical',
+#         'temporal_aggregation': '10_day',
+#         'period': '198101_201012',
+#         'format': 'zip',
+#     },
+#     'agroclimindicators.zip')
 
 # %%
 # Read the data Path where it is stored on the Computer
@@ -556,12 +556,6 @@ climate.dims
 # ## Calculating the climotological state means 
 
 # %%
-state_clim.DTR
-
-# %%
-randm_day["time.month" == 2]
-
-# %%
 plt.style.use('seaborn-colorblind')
 crop_states = ['Wisconsin'] #list(df_crop.State.unique())
 crop_states = [x.title() for x in crop_states]
@@ -587,29 +581,29 @@ randm_day = state_clim['TG'].isel( time=np.random.randint(len(state_clim.time)))
 randm_day = randm_day.salem.roi(shape=state_coord)
 plt.pcolormesh(randm_day.lon, randm_day.lat, randm_day)
 cb = plt.colorbar(shrink=0.4) # use shrink to make colorbar smaller
-cb.set_label(f"{clim['TG'].long_name} in {clim['TG'].units}")
+cb.set_label(f"{agroclim['TG'].long_name} in {agroclim['TG'].units}")
 plt.title(randm_day.time.values)
 plt.show()
 plt.close()
 
 
 # %%
-for var in clim:
-    print(f'{var}: {clim[var].attrs}')
+for var in agroclim:
+    print(f'{var}: {agroclim[var].attrs}')
 # Let's select the first time step and plot the 2m-air temperature
 
 # Let's check the dimensions
-for dim in clim.dims:
-    dimsize = clim.dims[dim]
+for dim in agroclim.dims:
+    dimsize = agroclim.dims[dim]
     print(f'\nData has {dimsize} {dim} ')
     if dim == 'latitude':
-        print(f' latitudes: from {float(clim[dim].min())} degree South',
-     f'to {float(clim[dim].max())} degree North')
+        print(f' latitudes: from {float(agroclim[dim].min())} degree South',
+     f'to {float(agroclim[dim].max())} degree North')
     if dim == 'longitude':
-        print(f' Longitudes: from {float(clim[dim].max())} degree East',
-     f'to {float(clim[dim].min())} degree West')
+        print(f' Longitudes: from {float(agroclim[dim].max())} degree East',
+     f'to {float(agroclim[dim].min())} degree West')
     if dim == 'time':
-        print(f'time: from {pd.to_datetime(clim["time"].min().values)} to {pd.to_datetime(clim["time"].max().values)} ')
+        print(f'time: from {pd.to_datetime(agroclim["time"].min().values)} to {pd.to_datetime(agroclim["time"].max().values)} ')
 
 # %%
 for state in list(df_crop.State.unique()): #['Wisconsin']:#
@@ -650,7 +644,7 @@ def plot_month_group(var, *months_to_plot ):
 
 
 # %%
-plot_month_group('TNx',12,1,2,3,4,5,6,7,8,9,10,11)
+plot_month_group('TXn',12,1,2,3,4,5,6,7,8,9,10,11)
 
 # %%
 for state in list(df_crop.State.unique()): #['Wisconsin']:#
