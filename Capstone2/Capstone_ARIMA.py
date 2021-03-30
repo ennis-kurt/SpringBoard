@@ -456,6 +456,18 @@ def crop_trend_plot(crop, method=False):
         #     print(f"{dt} NOT Exist")
 
 
+# %%
+# # USe this method to select the state and crop to plot
+# from ipywidgets import interact
+# def kp(mm="DEC"):
+#     test = clim_dek.sel(time=slice("1981-03",clim_dek.time[-1])).resample(time="QS-"+mm, 
+#                   loffset=pd.DateOffset(months=1, days=15), keep_attrs=True).mean()
+#     ax = test['TG'].mean(dim=('lat', 'lon')).sel(time = slice("1983-10",'1985')).plot(figsize=(12,5), marker='.')
+#     return test, ax
+
+# %%
+# test, cc = interact(kp, mm=(["OCT", "NOV", "DEC"]))
+
 # %% [markdown]
 # ## Alfalfa Hay
 

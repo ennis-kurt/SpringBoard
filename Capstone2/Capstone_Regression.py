@@ -121,7 +121,8 @@ data_dir = os.path.join('C:\\'
                         'Users',
                         'kurt_',
                         'Data',
-                        'agroclimate','')
+                        'agroclimate',
+                        'dekadal','')
 data_dir2 = os.path.join('C:\\'
                         'Users',
                         'kurt_',
@@ -137,10 +138,10 @@ data_dir2 = os.path.join('C:\\'
 
 # %% tags=[]
 # Import data as xarray dataset from the directory
-dask = False
+dask = True
 if dask:
     # Import with dask
-    agroclim = xarr.open_mfdataset(data_dir+'*.nc', parallel=True, 
+    agroclim = xarr.open_mfdataset(data_dir+'*hist_dek*.nc', parallel=True, 
                               combine='by_coords', chunks={'time': 20}
                              , engine='netcdf4')
     print(f'The chunk size for time dimension is {agroclim.chunks["time"][0]}\n')
@@ -653,7 +654,7 @@ climate = xarr.merge([clim_seasonal, agroclim2])
 #
 
 # %%
-def plot_roi_random_day(dt, var, state=list(df_crop.State.unique()), _plot=False):
+def sel_states(dt, var, state=list(df_crop.State.unique()), _plot=False):
     """Calculate state climate and Plot the region of interest from 
     the list of 'state' list. Default is all the states in df_crop """
     
@@ -699,13 +700,8 @@ def plot_roi_random_day(dt, var, state=list(df_crop.State.unique()), _plot=False
 
         plt.title(randm_day.time.values)
     return state_clim, fig, ax
-state_clim, fig, ax = plot_roi_random_day(climate,'CDD', ['Wisconsin'], _plot=True)
+state_clim, fig, ax = sel_states(climate,'CDD', ['Wisconsin'], _plot=True)
 plt.show()
-
-
-
-
-
 
 
 # %% [markdown]
@@ -1283,8 +1279,6 @@ ax.set_ylabel('Corn, Grain - Yield')
 plt.legend()
 
 plt.show()
- 
-
 
 # %% [markdown]
 # #### Plot Dynamic prediction
