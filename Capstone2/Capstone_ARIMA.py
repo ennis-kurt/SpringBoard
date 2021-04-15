@@ -14,6 +14,16 @@
 #     name: python3
 # ---
 
+# %% [markdown]
+# # Modelling Corn Production Yield
+# <div class="span5 alert alert-info">
+# 1. There are two main ways to predict the crop yield. The first one is from simple time series analysis of crop yield data, and building a time series model such as ARIMA. This method is straightforward, does not require any variable other than the yield itself and time as the single dimension. However, this method does not provide any physical inside for the problem and assumes that all the conditions relavent to crop production will be the same in the future. Despite the weakneses it can still provide a good starting point and can be useful to see how will the yield change in the future all the conditions stay the same as the past.
+#
+# 2. Second method would be building regression models to predict the crop yield from the actual physical parameters. This method is superior to time series analysis in terms of providing more actionable results, such as if we determine that the most important parameter is the rain amount during the growing season we could suggest irrigation to increase. 
+#
+# Here in this project I will use ARIMA mode and discuss the findings at the end.
+#     </div>
+
 # %%
 import os
 import cdsapi
@@ -32,16 +42,6 @@ import matplotlib.pyplot as plt
 import cartopy
 import cartopy.crs as ccrs
 import seaborn as sns
-
-# %% [markdown]
-# # Modelling
-# <div class="span5 alert alert-info">
-# 1. There are two main ways to predict the crop yield. The first one is from simple time series analysis of crop yield data, and building a time series model such as ARIMA. This method is straightforward, does not require any variable other than the yield itself and time as the single dimension. However, this method does not provide any physical inside for the problem and assumes that all the conditions relavent to crop production will be the same in the future. Despite the weakneses it can still provide a good starting point and can be useful to see how will the yield change in the future all the conditions stay the same as the past.
-#
-# 2. Second method would be building regression models to predict the crop yield from the actual physical parameters. This method is superior to time series analysis in terms of providing more actionable results, such as if we determine that the most important parameter is the rain amount during the growing season we could suggest irrigation to increase. 
-#
-# We will use both of these methods and compare the results at the end
-#     </div>
 
 # %% [markdown]
 # ## 1. ARIMA Model
